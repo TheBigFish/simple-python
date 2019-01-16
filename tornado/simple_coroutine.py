@@ -124,11 +124,13 @@ class Runner(object):
                     value = self.future.result()
                     yielded = self.gen.send(value)
                 except (StopIteration, Return) as e:
+                    # 协程执行完成，不再注册回调
                     self.result_future.set_result(_value_from_stopiteration(e))
                     self.result_future = None
                     return
                 except Exception:
                     return
+                # 协程未执行结束，继续使用 self.run() 进行驱动
                 if not self.handle_yield(yielded):
                     return
         finally:
@@ -137,6 +139,9 @@ class Runner(object):
     def handle_yield(self, yielded):
         self.future = yielded
         if not self.future.done():
+            # 给 future 增加执行结束回调函数，这样，外部使用 future.set_result 时会调用该回调
+            # 而该回调是把 self.run() 注册到 IOLoop 的事件循环
+            # 所以，future.set_result 会把 self.run() 注册到 IOLoop 的事件循环，从而在下一个事件循环中调用
             self.io_loop.add_future(
                 self.future, lambda f: self.run())
             return False
