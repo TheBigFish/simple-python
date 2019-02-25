@@ -246,4 +246,15 @@ def routine_main():
 
 
 if __name__ == '__main__':
+    #A = {'a': 1, 'b': 2, 'c': 3}
+    #B = {'b': 3, 'c': 4, 'd': 5}
+
+    dict1 = [{'a': '1', 'b': '2', 'c': '3'}, {'a': '1', 'b': '2', 'c': '3'}]
+
+    c = {x: [A.get(x, 0), B.get(x, 0)] for x in set(A).union(B)}
+
+
+
+    print(c)
+
     IOLoop.instance().run_sync(routine_main)
