@@ -107,3 +107,4 @@ venv.bak/
 .idea/simple-python.iml
 .idea/vcs.xml
 .idea/workspace.xml
+.idea/
